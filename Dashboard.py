@@ -106,7 +106,7 @@ with st.container(border=True):
     else:    
         st.subheader(f"Sebaran :blue[Penduduk {jenisterpilih}] di Jawa Barat,  :green[Tahun {tahunterpilih}]")
 
-        kol1, kol2 = st.columns(2)
+        kol1, kol2, kol3 = st.columns([2,1,1])
         with kol1:
             fig = px.choropleth_mapbox(
                 data_frame=datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['jenis_kelamin'] == jenisterpilih)],
@@ -135,6 +135,14 @@ with st.container(border=True):
             fig4.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
             fig4.update_traces(textinfo='label+value')
             st.plotly_chart(fig4, use_container_width=True)
+
+        with kol3:
+            pie_penduduk = px.pie(datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['jenis_kelamin'] == jenisterpilih)], 
+                            values='jumlah_penduduk', names='nama_kabupaten_kota', 
+                            color_discrete_sequence=warna_options[pilihwarna])
+            pie_penduduk.update_layout(showlegend=False,
+                                      margin={"r":0,"t":0,"l":0,"b":0})
+            st.plotly_chart(pie_penduduk, use_container_width=True)
 
 st.subheader("", divider='rainbow')
 

@@ -130,7 +130,8 @@ with st.container(border=True):
             fig4 = px.sunburst(datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['jenis_kelamin'] == jenisterpilih)], 
                        path=['nama_provinsi', 'nama_kabupaten_kota'],
                        values='jumlah_penduduk',
-                       hover_name='jenis_kelamin')
+                       hover_name='jenis_kelamin', 
+                            color_discrete_sequence=warna_options[pilihwarna])
     
             fig4.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
             fig4.update_traces(textinfo='label+value')

@@ -50,7 +50,7 @@ with st.container(border=True):
         jenisterpilih = st.selectbox("Filter Kategori", pilihanjenis)
     
     with kolom3:
-        pilihwarna = st.selectbox("Pilih Tema Warna Peta:", options=list(warna_options.keys()))
+        pilihwarna = st.selectbox("Pilih Tema Warna:", options=list(warna_options.keys()))
             
 with st.container(border=True):
     if tahunterpilih and jenisterpilih == 'SEMUA':

@@ -40,7 +40,7 @@ st.subheader("", divider='rainbow')
 
 with st.container(border=True):
     kolom1, kolom2, kolom3 = st.columns(3)
-    datapenduduk = data.sort_values(by=['tahun', 'kelompok_umur'], ascending=[False, True])
+    datapenduduk = jumlahpenduduk.sort_values(by=['tahun', 'kelompok_umur'], ascending=[False, True])
     pilihantahun = datapenduduk['tahun'].unique()
     pilihanjenis = datapenduduk['kelompok_umur'].unique()
     

@@ -32,7 +32,7 @@ warna_options = {
     'Spectral': px.colors.diverging.Spectral
 }
 
-jumlahpenduduk = data.groupby(['nama_provinsi', 'nama_kabupaten_kota', 'kelompok_umur', 'tahun'])['jumlah_penduduk'].sum().reset_index()
+jumlahpenduduk = data.groupby(['nama_provinsi', 'KODE_KK', 'nama_kabupaten_kota', 'kelompok_umur', 'tahun'])['jumlah_penduduk'].sum().reset_index()
 jumlahpenduduk['tahun'] = jumlahpenduduk['tahun'].astype(str)
 
 st.title("Visualisasi Open Data Kependudukan Jawa Barat")

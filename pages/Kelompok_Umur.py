@@ -55,6 +55,7 @@ with st.container(border=True):
             
 if tahunterpilih and jenisterpilih:
     df = datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['kelompok_umur'] == jenisterpilih)]
+    df1 = data[(data['tahun'] == tahunterpilih) & (data['kelompok_umur'] == jenisterpilih)]
     with st.container(border=True):
         st.subheader(f"Sebaran Penduduk Jawa Barat :blue[Berumur {jenisterpilih} Tahun], :green[Tahun {tahunterpilih}]")
 
@@ -80,7 +81,7 @@ if tahunterpilih and jenisterpilih:
             st.plotly_chart(fig2, use_container_width=True)
         
         with kol2:
-            fig3 = px.sunburst(df, 
+            fig3 = px.sunburst(df1, 
                        path=['nama_provinsi', 'nama_kabupaten_kota', 'jenis_kelamin'],
                        values='jumlah_penduduk', 
                        color_discrete_sequence=warna_options[pilihwarna])
@@ -100,7 +101,7 @@ if tahunterpilih and jenisterpilih:
             st.plotly_chart(pie_penduduk, use_container_width=True)
         
         with kol4:
-            trimep_penduduk = px.treemap(df, 
+            trimep_penduduk = px.treemap(df1, 
                             values='jumlah_penduduk', path=['nama_provinsi', 'nama_kabupaten_kota', 'jenis_kelamin'], 
                             color_discrete_sequence=warna_options[pilihwarna])
             trimep_penduduk.update_layout(showlegend=False,

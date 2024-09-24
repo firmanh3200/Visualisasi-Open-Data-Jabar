@@ -134,7 +134,57 @@ if tahunterpilih:
             st.subheader(f"Piramida Penduduk :blue[{kabterpilih}], :green[Tahun {tahunterpilih}]")
             st.plotly_chart(piramida_kabkot, use_container_width=True)
     
+st.subheader("", divider='rainbow')
+baris1, baris2 = st.columns(2)
+with baris1:
+    with st.container(border=True):
+        pivot_jabar['LAKI-LAKI'] = pivot_jabar['LAKI-LAKI'] * -1
         
+        animasi_jabar = px.bar(pivot_jabar, x=['LAKI-LAKI', 'PEREMPUAN'], 
+                                        y='kelompok_umur', labels={'variable':''},
+                                    orientation='h',
+                                    animation_frame='tahun', 
+                                    color_discrete_map={'LAKI-LAKI':pilihwarna1, 'PEREMPUAN':pilihwarna2})
+                
+        # Menempatkan legenda di bawah tengah
+        animasi_jabar.update_layout(
+            xaxis_title="",
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=-0.2,
+                xanchor="center",
+                x=0.5
+            )
+        )
+        st.subheader(f"Animasi Piramida Penduduk Jawa Barat")
+        st.plotly_chart(animasi_jabar, use_container_width=True)
+
+with baris2:
+    with st.container(border=True):
+        df2 = pivot_kabkot[(pivot_kabkot['nama_kabupaten_kota'] == kabterpilih)]
+        df2['LAKI-LAKI'] = df2['LAKI-LAKI'] * -1
+    
+        animasi_kabkot = px.bar(df2, x=['LAKI-LAKI', 'PEREMPUAN'], 
+                                y='kelompok_umur', labels={'variable':''},
+                            orientation='h',
+                            animation_frame='tahun', 
+                            color_discrete_map={'LAKI-LAKI':pilihwarna1, 'PEREMPUAN':pilihwarna2})
+        
+        # Menempatkan legenda di bawah tengah
+        animasi_kabkot.update_layout(
+            xaxis_title="",
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=-0.2,
+                xanchor="center",
+                x=0.5
+            )
+        )
+        st.subheader(f"Animasi Piramida Penduduk :blue[{kabterpilih}]")
+        st.plotly_chart(animasi_kabkot, use_container_width=True)
+                
 
 st.subheader("", divider='rainbow')
 

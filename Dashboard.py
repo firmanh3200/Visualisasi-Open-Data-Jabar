@@ -52,11 +52,12 @@ with st.container(border=True):
     with kolom3:
         pilihwarna = st.selectbox("Pilih Tema Warna:", options=list(warna_options.keys()))
             
-with st.container(border=True):
-    if tahunterpilih and jenisterpilih == 'SEMUA':
+if tahunterpilih and jenisterpilih == 'SEMUA':
+    with st.container(border=True):
         st.subheader(f"Sebaran Penduduk Jawa Barat, :green[Tahun {tahunterpilih}]")
 
-        kol1, kol2, kol3 = st.columns([2,1,1])
+    with st.container(border=True):
+        kol1, kol2 = st.columns([2,1])
         with kol1:
             fig2 = px.choropleth_mapbox(
                 data_frame=jumlahpenduduk[(jumlahpenduduk['tahun'] == tahunterpilih)],
@@ -85,28 +86,37 @@ with st.container(border=True):
             fig3.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
             fig3.update_traces(textinfo='label+value')
             st.plotly_chart(fig3, use_container_width=True)
-            
+
+    with st.container(border=True):
+        kol3, kol4 = st.columns(2)
         with kol3:
-           pie_penduduk = px.pie(datapenduduk[(datapenduduk['tahun'] == tahunterpilih)], 
+            pie_penduduk = px.pie(datapenduduk[(datapenduduk['tahun'] == tahunterpilih)], 
                             values='jumlah_penduduk', names='nama_kabupaten_kota', 
                             color_discrete_sequence=warna_options[pilihwarna])
-           pie_penduduk.update_layout(showlegend=False,
+            pie_penduduk.update_layout(showlegend=False,
                                       margin={"r":0,"t":0,"l":0,"b":0})
-        #    pie_penduduk.update_layout(
-        #             legend=dict(
-        #                 orientation="h",  # Horizontal orientation
-        #                 yanchor="top",    # Anchor the legend to the top
-        #                 y=-0.2,           # Position the legend below the chart
-        #                 xanchor="center",  # Center the legend horizontally
-        #                 x=0.5              # Center the legend at the middle of the chart
-        #             )
-        #         )
-           st.plotly_chart(pie_penduduk, use_container_width=True)
+            st.plotly_chart(pie_penduduk, use_container_width=True)
+        
+        with kol4:
+            trimep_penduduk = px.treemap(datapenduduk[(datapenduduk['tahun'] == tahunterpilih)], 
+                            values='jumlah_penduduk', path=['nama_provinsi', 'nama_kabupaten_kota', 'jenis_kelamin'], 
+                            color_discrete_sequence=warna_options[pilihwarna])
+            trimep_penduduk.update_layout(showlegend=False,
+                                      margin={"r":0,"t":0,"l":0,"b":0})
+            st.plotly_chart(trimep_penduduk, use_container_width=True)
     
-    else:    
+    with st.container(border=True):
+        perkembangan = px.line(jumlahpenduduk, x='tahun', y='jumlah_penduduk', line_shape='spline',
+                               color='nama_kabupaten_kota')
+        st.subheader("Perkembangan Penduduk Jawa Barat menurut Kabupaten/Kota dalam sepuluh tahun terakhir")
+        st.plotly_chart(perkembangan, use_container_width=True)
+    
+else:    
+    with st.container(border=True):
         st.subheader(f"Sebaran :blue[Penduduk {jenisterpilih}] di Jawa Barat,  :green[Tahun {tahunterpilih}]")
 
-        kol1, kol2, kol3 = st.columns([2,1,1])
+    with st.container(border=True):
+        kol1, kol2 = st.columns([2,1])
         with kol1:
             fig = px.choropleth_mapbox(
                 data_frame=datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['jenis_kelamin'] == jenisterpilih)],
@@ -128,22 +138,40 @@ with st.container(border=True):
         
         with kol2:
             fig4 = px.sunburst(datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['jenis_kelamin'] == jenisterpilih)], 
-                       path=['nama_provinsi', 'nama_kabupaten_kota'],
-                       values='jumlah_penduduk',
-                       hover_name='jenis_kelamin', 
+                        path=['nama_provinsi', 'nama_kabupaten_kota'],
+                        values='jumlah_penduduk',
+                        hover_name='jenis_kelamin', 
                             color_discrete_sequence=warna_options[pilihwarna])
-    
+
             fig4.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
             fig4.update_traces(textinfo='label+value')
             st.plotly_chart(fig4, use_container_width=True)
 
+    with st.container(border=True):
+        kol3, kol4 = st.columns(2)
         with kol3:
             pie_penduduk = px.pie(datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['jenis_kelamin'] == jenisterpilih)], 
                             values='jumlah_penduduk', names='nama_kabupaten_kota', 
                             color_discrete_sequence=warna_options[pilihwarna])
             pie_penduduk.update_layout(showlegend=False,
-                                      margin={"r":0,"t":0,"l":0,"b":0})
+                                        margin={"r":0,"t":0,"l":0,"b":0})
             st.plotly_chart(pie_penduduk, use_container_width=True)
+        
+        with kol4:
+            trimep_penduduk = px.treemap(datapenduduk[(datapenduduk['tahun'] == tahunterpilih) & (datapenduduk['jenis_kelamin'] == jenisterpilih)], 
+                            values='jumlah_penduduk', path=['nama_provinsi', 'nama_kabupaten_kota'], 
+                            color_discrete_sequence=warna_options[pilihwarna])
+            trimep_penduduk.update_layout(showlegend=False,
+                                        margin={"r":0,"t":0,"l":0,"b":0})
+            st.plotly_chart(trimep_penduduk, use_container_width=True)
+            
+    with st.container(border=True):
+        perkembangan = px.line(datapenduduk[datapenduduk['jenis_kelamin'] == jenisterpilih], 
+                        x='tahun', y='jumlah_penduduk', line_shape='spline',
+                        color='nama_kabupaten_kota')
+        st.subheader(f"Perkembangan :blue[Penduduk {jenisterpilih}] menurut Kabupaten/Kota dalam sepuluh tahun terakhir")
+        st.plotly_chart(perkembangan, use_container_width=True)
+    
 
 st.subheader("", divider='rainbow')
 

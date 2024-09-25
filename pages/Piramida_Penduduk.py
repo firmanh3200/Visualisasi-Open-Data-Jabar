@@ -45,10 +45,10 @@ warna2 = {
     'whitesmoke', 'yellow', 'yellowgreen'
 }
 
-penduduk_jabar = data.groupby(['nama_provinsi', 'jenis_kelamin', 'kelompok_umur', 'tahun'])['jumlah_penduduk'].sum().reset_index()
-penduduk_jabar = penduduk_jabar.sort_values(by=['tahun', 'kelompok_umur'], ascending=[False, True])
+data_jabar = pd.read_csv('dukcapil/piramidajabar.csv', 
+                          dtype={'kelompok_umur':'str', 'semester':'str', 'tahun':'str', 'jumlah_penduduk':'float'})
 
-pivot_jabar = penduduk_jabar.pivot_table(
+pivot_jabar = data_jabar.pivot_table(
     values='jumlah_penduduk', 
     index=['tahun', 'kelompok_umur'], 
     columns='jenis_kelamin'
@@ -65,29 +65,32 @@ st.title("Visualisasi Open Data Kependudukan Jawa Barat")
 st.subheader("", divider='rainbow')
 
 with st.container(border=True):
-    kolom1, kolom2, kolom3 = st.columns(3)
-    pilihantahun = pivot_jabar['tahun'].unique()
+    kolom1, kolom2 = st.columns(2)
     
     with kolom1:
-        tahunterpilih = st.selectbox("Filter Tahun", pilihantahun)
-    
-    with kolom2:
         pilihwarna1 = st.selectbox("Pilih Tema Warna1:", options=list(warna1), key='warna1')
     
-    with kolom3:
+    with kolom2:
         pilihwarna2 = st.selectbox("Pilih Tema Warna2:", options=list(warna2), key='warna2')
+    
             
-if tahunterpilih:
+if pilihwarna1 and pilihwarna2:
     kol1, kol2 = st.columns(2)
     
     with kol1:
-        df = pivot_jabar[(pivot_jabar['tahun'] == tahunterpilih)]
-        df['LAKI-LAKI'] = pd.to_numeric(df['LAKI-LAKI'], errors='coerce')
-        df['LAKI-LAKI'] = df['LAKI-LAKI'] * -1
-        df['PEREMPUAN'] = pd.to_numeric(df['PEREMPUAN'], errors='coerce')
-        df['kelompok_umur'] = df['kelompok_umur'].astype(object)
-        
         with st.container(border=True):
+            tahunjabar = pivot_jabar['tahun'].unique()
+            
+            pilihtahun = st.selectbox("Filter Tahun", tahunjabar, key='tahunjabar')
+            
+                        
+            df = pivot_jabar[(pivot_jabar['tahun'] == pilihtahun)]
+            
+            df['LAKI-LAKI'] = df['LAKI-LAKI'] * -1
+            
+            df['kelompok_umur'] = df['kelompok_umur'].astype(object)
+            
+        
             piramida_jabar = px.bar(df, x=['LAKI-LAKI', 'PEREMPUAN'], 
                                     y='kelompok_umur', labels={'variable':''},
                                 orientation='h', 
@@ -104,13 +107,22 @@ if tahunterpilih:
                     x=0.5
                 )
             )
-            st.subheader(f"Piramida Penduduk Jawa Barat :green[Tahun {tahunterpilih}]")
+            st.subheader(f"Piramida Penduduk Jawa Barat :green[Tahun {pilihtahun}]")
             st.plotly_chart(piramida_jabar, use_container_width=True)
+            with st.expander("Tabel"):
+                st.dataframe(df, use_container_width=True, hide_index=True)
     
     with kol2:
         with st.container(border=True):
+            pilihantahun = pivot_kabkot['tahun'].unique()
             pilihankab = pivot_kabkot['nama_kabupaten_kota'].unique()
-            kabterpilih = st.selectbox("Filter Kabupaten/Kota", pilihankab)
+            
+            kolc, kold = st.columns(2)
+            with kolc:
+                tahunterpilih = st.selectbox("Filter Tahun", pilihantahun)
+            
+            with kold:
+                kabterpilih = st.selectbox("Filter Kabupaten/Kota", pilihankab)
             
             df1 = pivot_kabkot[(pivot_kabkot['tahun'] == tahunterpilih) & (pivot_kabkot['nama_kabupaten_kota'] == kabterpilih)]
             df1['LAKI-LAKI'] = df1['LAKI-LAKI'] * -1
@@ -133,6 +145,9 @@ if tahunterpilih:
             )
             st.subheader(f"Piramida Penduduk :blue[{kabterpilih}], :green[Tahun {tahunterpilih}]")
             st.plotly_chart(piramida_kabkot, use_container_width=True)
+            with st.expander("Tabel"):
+                st.dataframe(df1, use_container_width=True, hide_index=True)
+
     
 st.subheader("", divider='rainbow')
 baris1, baris2 = st.columns(2)
